@@ -7,15 +7,11 @@
         const url = 'https://dog.ceo/api/breeds/image/random';
         const response = await fetch(url);
         const data = await response.json();
-        image.src = data.message;
+        return data.message;
     }
 
-    // function updateImg(data){
-    //     console.log(data)
-    // }
-
-    imgBtn.addEventListener('click', () => { 
-        getImg();
-        
+    imgBtn.addEventListener('click', async () => { 
+        const data = await getImg();
+        image.src = data;
     });
 })();
