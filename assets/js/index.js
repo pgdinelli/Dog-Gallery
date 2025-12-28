@@ -16,21 +16,33 @@
         }
     }
 
+    function displayDogData(data) {
+        image.src = data;
+        breed.textContent = data.split('/')[4];
+    }
+
+    function displayCatData(data) {
+        image.src = data[0].url;
+        breed.textContent = data[0].breeds[0].name;
+    }
+
     imgBtn.addEventListener('click', async () => {
         try {
             const data = await getImg();
-            image.src = data;
-            breed.textContent = data.split('/')[4];
-        } catch {
-            return;
+            displayDogData(data);
+        } catch (error) {
+            return error;
         }
     });
 
-    
-    // catsBtn.addEventListener('click', async () => {
-    //     const response = await fetch('http://localhost:3000/');
-    //     const data = await response.json();
-    //     console.log(data)
-    // });
+    catsBtn.addEventListener('click', async () => {
+        try {
+            const response = await fetch('http://localhost:3000/');
+            const data = await response.json();
+            displayCatData(data);
+        } catch (error) {
+            return error;
+        }
+    });
 
 })();
