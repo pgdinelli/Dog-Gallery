@@ -16,7 +16,7 @@
 
     dogsBtn.addEventListener('click', async () => {
         try {
-            const response = await fetch('http://localhost:3000/dog');
+            const response = await fetch('https://animalsgallery-backend.vercel.app/dog');
             const data = await response.json();
             displayDogData(data.message);
         } catch (error) {
@@ -27,7 +27,7 @@
 
     catsBtn.addEventListener('click', async () => {
         try {
-            const response = await fetch('http://localhost:3000/cat');
+            const response = await fetch('https://animalsgallery-backend.vercel.app/cat');
             const data = await response.json();
             displayCatData(data);
         } catch (error) {
