@@ -6,7 +6,7 @@
 }
 
 body {
-    min-height: 100vh; /*alterado pelo gpt*/
+    min-height: 100vh;
     background: #80FEFF;
     background: linear-gradient(90deg, rgba(128, 254, 255, 1) 0%, rgba(108, 227, 195, 1) 50%, rgba(87, 199, 133, 1) 100%);
 }
@@ -14,7 +14,7 @@ body {
 main,
 .image-container {
     width: 100%;
-    min-height: 100vh; /* alterado pelo gpt */
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
