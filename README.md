@@ -42,3 +42,91 @@ A maior diferença entre as APIs é que para os cães o nome da raça vem na pr�
 Além disso, a API de gatos pode exibir fotos de gatos que não contém dados de raça, então para evitar problemas no frontend da aplicação foi usado uma query string **has_breeds=1** na url, o que limita a resposta da API a enviar apenas gatos que possuem raça conhecida. Em seguida a query string **api_key=${process.env.CAT_API_KEY}** é onde deve se passar a chave privada da API, foi utilizado o módulo **dotenv** do **Node** para ler a variável de ambiente.
 
 ### Frontend
+Para o Frontend, foi usado puro HTML, CSS e JavaScript para manipular a página de forma dinâmica. O código HTML abaixo mostra um "h1" de id "breed" que será usado para exibir a raça do animal dinamicamente, assim como a imagem que terá sua url modificada para a que vier na resposta da API, abaixo um botão para exibir fotos de cães e outro para fotos de gatos.
+```
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <title>Galeria de Cães</title>
+</head>
+<body>
+    <main>
+        <div class="image-container">
+            <h1 id="breed"></h1>
+            <div class="image-wrapper">
+                <img src="./assets/img/dog-sample.webp" id="image" alt="imagem de um animal">
+            </div>
+        </div>
+        <div class="btn-container">
+            <button id="dogsBtn">Cachorros</button>
+            <button id="catsBtn">Gatos</button>
+        </div>
+    </main>
+
+    <script src="./assets/js/index.js"></script>
+</body>
+</html>
+```
+O código JavaScript abaixo foi utilizado para resgatar os dados que estão sendo enviados pelo backend da aplicação e alterar a página de acordo com a resposta recebida. 
+```
+(function () {
+    const image = document.querySelector('#image');
+    const breed = document.querySelector('#breed');
+    const dogsBtn = document.querySelector('#dogsBtn');
+    const catsBtn = document.querySelector('#catsBtn');
+
+    function displayDogData(data) {
+        image.src = data;
+        breed.textContent = data.split('/')[4];
+    }
+
+    function displayCatData(data) {
+        image.src = data[0].url;
+        breed.textContent = data[0].breeds[0].name;
+    }
+
+    dogsBtn.addEventListener('click', async () => {
+        try {
+            const response = await fetch('https://animalsgallery-backend.vercel.app/dog');
+            const data = await response.json();
+            displayDogData(data.message);
+        } catch (error) {
+            breed.textContent = 'Erro ao mostrar imagem do cachorro';
+            image.src = '';
+        }
+    });
+
+    catsBtn.addEventListener('click', async () => {
+        try {
+            const response = await fetch('https://animalsgallery-backend.vercel.app/cat');
+            const data = await response.json();
+            displayCatData(data);
+        } catch (error) {
+            breed.textContent = 'Erro ao mostrar imagem do gato';
+            image.src = '';
+        }
+    });
+
+})();
+```
+Foi utilizada uma **IIFE** (Immediately Invoked Function Expression) para envolver todo o código e proteger as variáveis e funções do escopo global. As constantes declaradas no início do programa respectivamente são para alterar o conteúdo da imagem, conteúdo do "h1" que exibe a raça e os botões que irão escutar eventos de clique do usuário. Cada botão enviará uma requisição ao backend da aplicação utilizando o método **fetch**, que acessa a rota com os dados do cachorro ou do gato dependendo de qual for clicado, então utiliza-se o método **json()** para converter os dados em formato de objeto JS. O método fetch retorna uma promise que precisa aguardar ser resolvida ou não, por este motivo foi utilizado novamente async/await dentro de blocos try/catch. 
+
+As funções **displayDogData()** e **displayCatData()** são chamadas passando como argumento os dados que foram recebidos do backend, estas funções tem o simples objetivo de formatar os dados e exibir na tela. Desta forma, elas alteram o atributo "src" da tag "img" no HTML para que seja a url da imagem enviada pela API dos animais e também alteram o conteúdo do "h1" para que seja o nome da raça. Como a API de cães traz a raça na própria url, pegamos apenas este dado usando o método **split()** dividindo cada palavra que vem entre as barras "/" da url, a raça sempre vem na posição de índice 4. Já a API de gatos traz a raça de uma forma diferente, este dado vem dentro de um array de objetos contendo várias informações sobre peso, origem e temperamento do animal. Uma das chaves é o elemento "name" que tem como valor o nome da raça, logo foi necessário pegar apenas o índice deste atributo para exibir na página web.
+
+## Tecnologias utilizadas
+- HTML, CSS e JavaScript
+- Node.js
+- Express
+- Axios
+- Dotenv
+- Cors
+
+## Competências
+- Manipulação do DOM
+- Promises, JavaScript assíncrono async/await
+- Cors
+- Sistema de rotas backend
+- Design reponsivo
